@@ -4,6 +4,7 @@ import com.csOneCup.csOneCup.dto.ResponseString;
 import com.csOneCup.csOneCup.dto.SignUpRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -16,6 +17,7 @@ public class UserService {
 
     public ResponseString signUp(SignUpRequest request) {
         String encodedPassword = passwordEncoder.encode(request.getPassword());
+        if(userRepository.existsById(request.getUserId())) throw new DuplicateKeyException("exist user id");
         User user = userRepository.save(
                 User.builder()
                         .userId(request.getUserId())
