@@ -9,7 +9,7 @@
 
 <div align="center">
   <a href="https://github.com/CSOneCup/CSOneCup-server">
-    <img src="https://github.com/user-attachments/assets/00e1c13f-1de7-48c7-80c5-ade20d515e92/image-removebg-preview.png" alt="CSOneCup Logo" width="80" height="80">
+    <img src="logo.png" alt="CSOneCup Logo" width="240" height="240">
   </a>
 
 
@@ -27,7 +27,7 @@
     ·
     <a href="https://github.com/CSOneCup/CSOneCup-server/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
     ·
-    <a href="https://github.com/CSOneCup/CSOneCup-client">View Cient</a>
+    <a href="https://github.com/CSOneCup/CSOneCup-client">View Client</a>
   </p>
 </div>
 
@@ -151,36 +151,33 @@ The platform turns learning into a rewarding and motivating experience through f
 
 ## Team Members
 
-<div style="overflow-x: auto; white-space: nowrap;">
-  <table>
+<div style="overflow-x: auto;">
+  <table style="min-width: 800px; table-layout: fixed; text-align: center;">
     <tr>
       <td align="center">
-        <img src="https://avatars.githubusercontent.com/JHoon0214?s=60&v=4" alt="김재훈"><br>
+        <img src="https://avatars.githubusercontent.com/JHoon0214" alt="김재훈" width="120" height="120"><br>
         <a href="https://github.com/JHoon0214"><b>김재훈</b></a><br>
-        프로젝트 매니저 & 데이터베이스 설계
+        서버 개발 & 회원 인증 로직 개발
       </td>
       <td align="center">
-        <img src="https://avatars.githubusercontent.com/SHKim55?s=60&v=4" alt="김선호"><br>
+        <img src="https://avatars.githubusercontent.com/SHKim55" alt="김선호" width="120" height="120"><br>
         <a href="https://github.com/SHKim55"><b>김선호</b></a><br>
-        클라이언트 개발 & Flutter UI 설계
+        메인 메뉴 개발 & 챌린지 개발
       </td>
       <td align="center">
-        <img src="https://avatars.githubusercontent.com/EpicFn?s=60&v=4" alt="김혁진"><br>
+        <img src="https://avatars.githubusercontent.com/EpicFn" alt="김혁진" width="120" height="120"><br>
         <a href="https://github.com/EpicFn"><b>김혁진</b></a><br>
-        서버 개발 & API 설계
+        퀴즈 로직 개발
       </td>
       <td align="center">
-        <img src="https://avatars.githubusercontent.com/ja7811?s=60&v=4" alt="현재환"><br>
+        <img src="https://avatars.githubusercontent.com/ja7811" alt="현재환" width="120" height="120"><br>
         <a href="https://github.com/ja7811"><b>현재환</b></a><br>
-        통합 테스트 & 배포
+        카드 관리 & 덱 생성 로직 개발
       </td>
     </tr>
   </table>
 </div>
 
-
-
-### 팀 소개
 우리 팀은 **컴퓨터과학 학습의 재미와 효과를 동시에 제공하는 플랫폼**을 만들기 위해 모였습니다. 💪
 
 
