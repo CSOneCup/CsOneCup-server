@@ -1,10 +1,16 @@
 package com.csOneCup.csOneCup.user;
 
+import com.csOneCup.csOneCup.auth.JWTUtil;
 import com.csOneCup.csOneCup.dto.ResponseString;
+import com.csOneCup.csOneCup.dto.SignInRequest;
 import com.csOneCup.csOneCup.dto.SignUpRequest;
+import com.csOneCup.csOneCup.global.error.exception.UnauthorizedException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -14,6 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JWTUtil jwtUtil;
 
     public ResponseString signUp(SignUpRequest request) {
         String encodedPassword = passwordEncoder.encode(request.getPassword());
@@ -27,5 +35,18 @@ public class UserService {
         );
 
         return ResponseString.builder().response(user.getUserId()).build();
+    }
+
+    public ResponseString signin(SignInRequest signInRequest) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(signInRequest.getUserId(), signInRequest.getPassword())
+            );
+
+            return ResponseString.builder().response(jwtUtil.createJWT(signInRequest.getUserId(), 360000000L)).build();
+        }
+        catch (Exception e) {
+            throw new UnauthorizedException();
+        }
     }
 }

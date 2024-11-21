@@ -46,7 +46,8 @@ public class SecurityConfig {
                 .httpBasic((auth) -> auth.disable())
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(
-                                "/api/user/signup"
+                                "/api/user/signup",
+                                "/api/user/signin"
                         )
                         .permitAll()
                         .anyRequest().authenticated()

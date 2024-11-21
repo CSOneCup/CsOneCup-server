@@ -1,10 +1,12 @@
 package com.csOneCup.csOneCup.user;
 
 import com.csOneCup.csOneCup.dto.ResponseString;
+import com.csOneCup.csOneCup.dto.SignInRequest;
 import com.csOneCup.csOneCup.dto.SignUpRequest;
 import com.csOneCup.csOneCup.global.common.SuccessResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,5 +20,11 @@ public class userController {
         ResponseString response = userService.signUp(request);
 
         return SuccessResponse.ok(response);
+    }
+
+    @PostMapping("/signin")
+    public ResponseEntity<SuccessResponse<?>> login(@RequestBody SignInRequest signInRequest) {
+        ResponseString token = userService.signin(signInRequest);
+        return SuccessResponse.ok(token);
     }
 }
