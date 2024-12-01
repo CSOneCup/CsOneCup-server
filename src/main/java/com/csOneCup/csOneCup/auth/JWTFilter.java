@@ -20,7 +20,8 @@ public class JWTFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         if ("/api/user/signup".equals(request.getServletPath()) || "/api/user/signin".equals(request.getServletPath())) {
             filterChain.doFilter(request, response);
             return;
@@ -33,6 +34,8 @@ public class JWTFilter extends OncePerRequestFilter {
             return;
         }
 
+        // JWT 토큰에서 사용자 정보 추출
+        String userId = jwtUtil.extractUserId(authorization);
         String token = authorization.split(" ")[1];
 
         if (jwtUtil.isExpired(token)) {
@@ -41,6 +44,13 @@ public class JWTFilter extends OncePerRequestFilter {
             return;
         }
 
+
+        // SecurityContext에 인증 객체 설정
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(userId, null, null); // 권한은 필요 시 추가
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // 다음 필터로 요청 전달
         filterChain.doFilter(request, response);
     }
 }

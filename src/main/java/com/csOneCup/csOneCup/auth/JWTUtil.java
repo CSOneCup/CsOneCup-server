@@ -17,6 +17,7 @@ public class JWTUtil {
 
     public JWTUtil(@Value("${jwt.secret}")String secret) {
         this.secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
+        JWTUtil.staticSecretKey = secret; // static 필드 초기화
     }
 
     public String getUserid(String token) {
@@ -41,9 +42,9 @@ public class JWTUtil {
                 .compact();
     }
 
-    public static UUID extractUserId(String token) {
+    public static String extractUserId(String token) {
+        token = getOnlyToken(token);
         SecretKey noStringSecret = new SecretKeySpec(staticSecretKey.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
-        String userIdString = Jwts.parser().verifyWith(noStringSecret).build().parseSignedClaims(token).getPayload().get("userId", String.class);
-        return UUID.fromString(userIdString);
+        return Jwts.parser().verifyWith(noStringSecret).build().parseSignedClaims(token).getPayload().get("username", String.class);
     }
 }

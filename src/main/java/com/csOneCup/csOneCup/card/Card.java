@@ -1,6 +1,7 @@
 package com.csOneCup.csOneCup.card;
 
 import com.csOneCup.csOneCup.deck.Deck;
+import com.csOneCup.csOneCup.dto.CardDTO;
 import com.csOneCup.csOneCup.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -49,4 +50,19 @@ public class Card {
 
     @Column(nullable = false)
     private String explanation;
+
+    public CardDTO convertToCardDTO() {
+        return CardDTO.builder()
+                .cardId(this.getCardId())
+                .quizType(this.getQuizType())
+                .title(this.getTitle())
+                .category(this.getCategory())
+                .question(this.getQuestion())
+                .choice(this.getChoice())
+                .answer(this.getAnswer())
+                .explanation(this.getExplanation())
+                .ownerId(this.getOwner().getUserId())
+                .deckId(this.getDeck() != null ? this.getDeck().getDeckId() : null)
+                .build();
+    }
 }
