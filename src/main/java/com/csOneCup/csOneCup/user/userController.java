@@ -1,5 +1,6 @@
 package com.csOneCup.csOneCup.user;
 
+import com.csOneCup.csOneCup.auth.JWTUtil;
 import com.csOneCup.csOneCup.dto.ResponseString;
 import com.csOneCup.csOneCup.dto.SignInRequest;
 import com.csOneCup.csOneCup.dto.SignUpRequest;
