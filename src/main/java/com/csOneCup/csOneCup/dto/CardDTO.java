@@ -23,4 +23,5 @@ public class CardDTO {
     private String explanation;
     private String ownerId;
     private Long deckId;
+    private int csvNumber;
 }

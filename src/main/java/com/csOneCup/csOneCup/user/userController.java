@@ -28,4 +28,14 @@ public class userController {
         ResponseString token = userService.signin(signInRequest);
         return SuccessResponse.ok(token);
     }
+
+    @GetMapping("/info")
+    public ResponseEntity<SuccessResponse<?>> getInfo(@RequestHeader("Authorization") String token) {
+        return SuccessResponse.ok(userService.getInfo(token));
+    }
+
+    @GetMapping("/all/info")
+    public ResponseEntity<SuccessResponse<?>> getAllInfo(@RequestHeader("Authorization") String token) {
+        return SuccessResponse.ok(userService.getAllInfo(token));
+    }
 }

@@ -4,6 +4,7 @@ import com.csOneCup.csOneCup.auth.JWTUtil;
 import com.csOneCup.csOneCup.dto.ResponseString;
 import com.csOneCup.csOneCup.dto.SignInRequest;
 import com.csOneCup.csOneCup.dto.SignUpRequest;
+import com.csOneCup.csOneCup.dto.UserDTO;
 import com.csOneCup.csOneCup.global.error.exception.UnauthorizedException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -48,5 +52,23 @@ public class UserService {
         catch (Exception e) {
             throw new UnauthorizedException();
         }
+    }
+
+    public UserDTO getInfo(String token) {
+        String userId = JWTUtil.extractUserId(token);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return UserDTO.fromEntity(user);
+    }
+
+    public List<UserDTO> getAllInfo(String token) {
+        String userId = JWTUtil.extractUserId(token);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        List<User> users = userRepository.findAll();
+
+        return users.stream().map(UserDTO::fromEntity).collect(Collectors.toList());
     }
 }

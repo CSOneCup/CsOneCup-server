@@ -54,18 +54,11 @@ public class DeckService {
         // 카드 추가
         List<Card> cards = request.getCards().stream()
                 .map(cardDTO -> Card.builder()
-                        .quizType(cardDTO.getQuizType())
-                        .title(cardDTO.getTitle())
-                        .category(cardDTO.getCategory())
-                        .question(cardDTO.getQuestion())
-                        .choice(cardDTO.getChoice())
-                        .answer(cardDTO.getAnswer())
-                        .explanation(cardDTO.getExplanation())
-                        .deck(deck)
-                        .owner(user)
+                        .csvNumber(cardDTO.getCsvNumber()) // CSV 넘버만 저장
+                        .deck(deck) // 해당 카드의 소속 덱
+                        .owner(user) // 카드 소유자
                         .build())
                 .collect(Collectors.toList());
-
         cardRepository.saveAll(cards);
 
         return DeckResponse.builder()

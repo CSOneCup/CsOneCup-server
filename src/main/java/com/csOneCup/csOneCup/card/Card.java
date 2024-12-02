@@ -4,18 +4,14 @@ import com.csOneCup.csOneCup.deck.Deck;
 import com.csOneCup.csOneCup.dto.CardDTO;
 import com.csOneCup.csOneCup.user.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
-
 @Entity
 @Getter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "card")
 public class Card {
     @Id
@@ -31,38 +27,29 @@ public class Card {
     private Deck deck;
 
     @Column(nullable = false)
-    private String quizType;
-
-    @Column(nullable = false)
-    private String title;
-
-    @Column(nullable = false)
-    private String category;
-
-    @Column(nullable = false)
-    private String question;
-
-    @ElementCollection
-    private List<String> choice;
-
-    @Column(nullable = false)
-    private int answer;
-
-    @Column(nullable = false)
-    private String explanation;
+    private int csvNumber;
 
     public CardDTO convertToCardDTO() {
+        // CsvDataLoader 객체를 직접 생성
+        CsvDataLoader csvDataLoader = new CsvDataLoader();
+        CardDTO csvData = csvDataLoader.getCardData(this.csvNumber);
+
+        if (csvData == null) {
+            throw new IllegalStateException("CSV 데이터가 존재하지 않습니다: " + this.csvNumber);
+        }
+
         return CardDTO.builder()
-                .cardId(this.getCardId())
-                .quizType(this.getQuizType())
-                .title(this.getTitle())
-                .category(this.getCategory())
-                .question(this.getQuestion())
-                .choice(this.getChoice())
-                .answer(this.getAnswer())
-                .explanation(this.getExplanation())
-                .ownerId(this.getOwner().getUserId())
-                .deckId(this.getDeck() != null ? this.getDeck().getDeckId() : null)
+                .cardId(this.cardId)
+                .quizType(csvData.getQuizType())
+                .title(csvData.getTitle())
+                .category(csvData.getCategory())
+                .question(csvData.getQuestion())
+                .choice(csvData.getChoice())
+                .answer(csvData.getAnswer())
+                .explanation(csvData.getExplanation())
+                .ownerId(this.owner.getUserId())
+                .deckId(this.deck != null ? this.deck.getDeckId() : null)
+                .csvNumber(csvData.getCsvNumber())
                 .build();
     }
 }
