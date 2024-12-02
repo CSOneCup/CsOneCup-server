@@ -1,19 +1,16 @@
 package com.csOneCup.csOneCup.dto;
 
-import com.csOneCup.csOneCup.card.Card;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.util.List;
+import lombok.NoArgsConstructor;
 
 @Builder
 @Getter
 @AllArgsConstructor
-public class CardsInDeck {
-    @JsonProperty("deck_info")
-    DeckDTO deckInfo;
-
-    List<CardDTO> cards;
+@NoArgsConstructor
+public class CardAddingRequest {
+    @JsonProperty("csv_num")
+    private int csvNum;
 }

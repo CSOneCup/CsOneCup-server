@@ -1,13 +1,19 @@
 package com.csOneCup.csOneCup.card;
 
 import com.csOneCup.csOneCup.auth.JWTUtil;
-import com.csOneCup.csOneCup.dto.CardDTO;
+import com.csOneCup.csOneCup.deck.Deck;
+import com.csOneCup.csOneCup.deck.DeckRepository;
+import com.csOneCup.csOneCup.deck_card_mapping.DeckCardMapping;
+import com.csOneCup.csOneCup.deck_card_mapping.DeckCardMappingRepository;
+import com.csOneCup.csOneCup.dto.*;
 import com.csOneCup.csOneCup.user.User;
 import com.csOneCup.csOneCup.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -15,6 +21,9 @@ import java.util.stream.Collectors;
 @Transactional
 public class CardService {
     private final UserRepository userRepository;
+    private final CardRepository cardRepository;
+    private final DeckRepository deckRepository;
+    private final DeckCardMappingRepository deckCardMappingRepository;
     private final CsvDataLoader csvDataLoader;
 
 
@@ -29,5 +38,68 @@ public class CardService {
                         card.getTitle().toLowerCase().contains(query.toLowerCase()) ||
                         card.getQuestion().toLowerCase().contains(query.toLowerCase()))
                 .collect(Collectors.toList());
+    }
+
+    public CardDTO addCardToUser(String token, CardAddingRequest cardAddingRequest) {
+        String userId = JWTUtil.extractUserId(token);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Card card = cardRepository.save(
+                Card.builder()
+                        .owner(user)
+                        .csvNumber(cardAddingRequest.getCsvNum())
+                        .build()
+        );
+        return card.convertToCardDTO();
+    }
+
+    public CardDTO addCardToDeck(String token, CardAddingToDeckRequest cardAddingRequest) {
+        String userId = JWTUtil.extractUserId(token);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Optional<Card> card = cardRepository.findById(cardAddingRequest.getCardId());
+        Optional<Deck> deck = deckRepository.findById(cardAddingRequest.getDeckId());
+
+        if(card.isEmpty() || deck.isEmpty()) throw new RuntimeException();
+        if(!card.get().getOwner().equals(user) || !deck.get().getOwner().equals(user)) throw new RuntimeException("권한이 없습니다");
+
+        Card realCard = card.get();
+        Deck realDeck = deck.get();
+
+        deckCardMappingRepository.save(
+                DeckCardMapping.builder()
+                        .deck(realDeck)
+                        .card(realCard)
+                        .build()
+        );
+        deck.get().increaseCardNum();
+        deckRepository.save(deck.get());
+
+        return realCard.convertToCardDTO();
+    }
+
+    public CardDTO getRandomCard(boolean redundant, String category, String token) {
+        String userId = JWTUtil.extractUserId(token);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Random random = new Random();
+        List<Integer> ownedCsvNumbers = cardRepository.findAllByOwner(user).stream().mapToInt(Card::getCsvNumber).boxed().toList();
+
+        while (true) {
+            int randomCsvNumber = random.nextInt(252) + 1;
+
+            if (!redundant && ownedCsvNumbers.contains(randomCsvNumber)) {
+                continue;
+            }
+
+            CardDTO card = csvDataLoader.getCardData(randomCsvNumber);
+
+            if (card != null && (card.getCategory().equals(category) || category.equals("all"))) {
+                return card;
+            }
+        }
     }
 }

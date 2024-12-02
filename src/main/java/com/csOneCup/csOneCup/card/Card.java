@@ -12,7 +12,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "card")
+@Table(name = "card", uniqueConstraints = {@UniqueConstraint(columnNames = {"owner_id", "csvNumber"})})
 public class Card {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,10 +21,6 @@ public class Card {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "deck_id")
-    private Deck deck;
 
     @Column(nullable = false)
     private int csvNumber;
@@ -48,7 +44,6 @@ public class Card {
                 .answer(csvData.getAnswer())
                 .explanation(csvData.getExplanation())
                 .ownerId(this.owner.getUserId())
-                .deckId(this.deck != null ? this.deck.getDeckId() : null)
                 .csvNumber(csvData.getCsvNumber())
                 .build();
     }

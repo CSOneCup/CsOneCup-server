@@ -11,5 +11,4 @@ import java.util.List;
 @AllArgsConstructor
 public class DeckCreationRequest {
     private String name;
-    private List<CardDTO> cards;
 }
