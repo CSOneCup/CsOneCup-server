@@ -16,6 +16,11 @@ import org.springframework.web.bind.annotation.*;
 public class userController {
     private final UserService userService;
 
+    @GetMapping("/healthy")
+    public ResponseEntity<SuccessResponse<?>> healthyCheck() {
+        return SuccessResponse.ok("healthy~");
+    }
+
     @PostMapping("/signup")
     public ResponseEntity<SuccessResponse<?>> changeUserName(@RequestBody SignUpRequest request) {
         ResponseString response = userService.signUp(request);

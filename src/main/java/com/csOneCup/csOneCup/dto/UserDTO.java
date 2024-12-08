@@ -1,7 +1,9 @@
 package com.csOneCup.csOneCup.dto;
 
 import com.csOneCup.csOneCup.card.Card;
+import com.csOneCup.csOneCup.card.CardDTOConverter;
 import com.csOneCup.csOneCup.user.User;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,25 +15,13 @@ import java.util.stream.Collectors;
 @Builder
 @AllArgsConstructor
 public class UserDTO {
+    @JsonProperty("user_id")
     private String userId;
     private String name;
     private int level;
+    @JsonProperty("exp_point")
     private int expPoint;
     private List<DeckDTO> decks;
     private List<CardDTO> cards;
     private StatisticsDTO statistics;
-
-    public static UserDTO fromEntity(User user) {
-        return UserDTO.builder()
-                .userId(user.getUserId())
-                .name(user.getName())
-                .level(user.getLevel())
-                .expPoint(user.getExpPoint())
-                .decks(user.getDecks().stream()
-                        .map(DeckDTO::fromEntity)
-                        .collect(Collectors.toList()))
-                .statistics(StatisticsDTO.fromEntity(user.getStatistics()))
-                .cards(user.getCards().stream().map(Card::convertToCardDTO).collect(Collectors.toList()))
-                .build();
-    }
 }

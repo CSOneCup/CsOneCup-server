@@ -7,6 +7,7 @@ import com.csOneCup.csOneCup.dto.DeckCreationRequest;
 import com.csOneCup.csOneCup.dto.DeckResponse;
 import com.csOneCup.csOneCup.global.common.SuccessCode;
 import com.csOneCup.csOneCup.global.common.SuccessResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/decks")
 @RequiredArgsConstructor
+@Tag(name = "Decks", description = "Decks API")
 public class DeckController {
 
     private final DeckService deckService;
@@ -27,11 +29,11 @@ public class DeckController {
     }
 
     @PostMapping
-    public ResponseEntity<DeckResponse> createDeck(
+    public ResponseEntity<SuccessResponse<?>> createDeck(
             @RequestHeader("Authorization") String authorizationHeader,
             @RequestBody DeckCreationRequest request) {
         DeckResponse deckResponse = deckService.createDeck(authorizationHeader, request);
 
-        return ResponseEntity.ok(deckResponse);
+        return SuccessResponse.ok(deckResponse);
     }
 }

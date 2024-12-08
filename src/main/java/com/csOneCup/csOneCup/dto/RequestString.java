@@ -9,6 +9,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class RequestString {
-    @JsonProperty("response")
+    @JsonProperty("request")
     private String request;
 }

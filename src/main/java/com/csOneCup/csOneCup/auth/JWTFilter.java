@@ -22,10 +22,12 @@ public class JWTFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        if ("/api/user/signup".equals(request.getServletPath()) || "/api/user/signin".equals(request.getServletPath())) {
+        if ("/api/user/signup".equals(request.getServletPath()) || "/api/user/signin".equals(request.getServletPath()) || request.getServletPath().startsWith("/swagger") || request.getServletPath().equals("/v3/api-docs/swagger-config") || request.getServletPath().equals("/api/user/healthy")) {
             filterChain.doFilter(request, response);
             return;
         }
+
+        System.out.println(request.getServletPath());
 
         String authorization = request.getHeader("Authorization");
         if (authorization == null || !authorization.startsWith("Bearer ")) {

@@ -25,6 +25,7 @@ public class CardService {
     private final DeckRepository deckRepository;
     private final DeckCardMappingRepository deckCardMappingRepository;
     private final CsvDataLoader csvDataLoader;
+    private final CardDTOConverter cardDTOConverter;
 
 
     public List<CardDTO> searchUserCards(String token, String category, String query) {
@@ -32,7 +33,7 @@ public class CardService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return user.getCards().stream().map(Card::convertToCardDTO)
+        return user.getCards().stream().map(card -> cardDTOConverter.convertToCardDTO(card))
                 .filter(card -> category == null || card.getCategory().equalsIgnoreCase(category))
                 .filter(card -> query == null ||
                         card.getTitle().toLowerCase().contains(query.toLowerCase()) ||
@@ -51,7 +52,7 @@ public class CardService {
                         .csvNumber(cardAddingRequest.getCsvNum())
                         .build()
         );
-        return card.convertToCardDTO();
+        return cardDTOConverter.convertToCardDTO(card);
     }
 
     public CardDTO addCardToDeck(String token, CardAddingToDeckRequest cardAddingRequest) {
@@ -77,7 +78,7 @@ public class CardService {
         deck.get().increaseCardNum();
         deckRepository.save(deck.get());
 
-        return realCard.convertToCardDTO();
+        return cardDTOConverter.convertToCardDTO(realCard);
     }
 
     public CardDTO getRandomCard(boolean redundant, String category, String token) {
@@ -95,7 +96,7 @@ public class CardService {
                 continue;
             }
 
-            CardDTO card = csvDataLoader.getCardData(randomCsvNumber);
+            CardDTO card = csvDataLoader.getCardData((long)randomCsvNumber);
 
             if (card != null && (card.getCategory().equals(category) || category.equals("all"))) {
                 return card;

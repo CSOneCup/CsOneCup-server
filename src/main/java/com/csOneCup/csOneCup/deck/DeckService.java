@@ -2,6 +2,7 @@ package com.csOneCup.csOneCup.deck;
 
 import com.csOneCup.csOneCup.auth.JWTUtil;
 import com.csOneCup.csOneCup.card.Card;
+import com.csOneCup.csOneCup.card.CardDTOConverter;
 import com.csOneCup.csOneCup.card.CardRepository;
 import com.csOneCup.csOneCup.deck.Deck;
 import com.csOneCup.csOneCup.deck.DeckRepository;
@@ -29,6 +30,7 @@ public class DeckService {
     private final DeckCardMappingRepository deckCardMappingRepository;
     private final UserRepository userRepository;
     private final CardRepository cardRepository;
+    private final CardDTOConverter cardDTOConverter;
 
     public CardsInDeck SearchCardsInDeck(Long deckId, String token) {
         Deck deck = deckRepository.findById(deckId)
@@ -40,7 +42,7 @@ public class DeckService {
 
         return CardsInDeck.builder()
                 .deckInfo(DeckDTO.fromEntity(deck))
-                .cards(deckCardMappings.stream().map(deckCardMapping -> deckCardMapping.getCard().convertToCardDTO()).collect(Collectors.toList()))
+                .cards(deckCardMappings.stream().map(deckCardMapping -> cardDTOConverter.convertToCardDTO(deckCardMapping.getCard())).collect(Collectors.toList()))
                 .build();
     }
 

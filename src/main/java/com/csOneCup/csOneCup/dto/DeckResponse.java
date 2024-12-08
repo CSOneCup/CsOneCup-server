@@ -1,5 +1,6 @@
 package com.csOneCup.csOneCup.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,5 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DeckResponse {
+    @JsonProperty("deck_id")
     private Long deckId;
 }

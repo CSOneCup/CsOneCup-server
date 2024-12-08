@@ -1,10 +1,8 @@
 package com.csOneCup.csOneCup.user;
 
 import com.csOneCup.csOneCup.auth.JWTUtil;
-import com.csOneCup.csOneCup.dto.ResponseString;
-import com.csOneCup.csOneCup.dto.SignInRequest;
-import com.csOneCup.csOneCup.dto.SignUpRequest;
-import com.csOneCup.csOneCup.dto.UserDTO;
+import com.csOneCup.csOneCup.card.CardDTOConverter;
+import com.csOneCup.csOneCup.dto.*;
 import com.csOneCup.csOneCup.global.error.exception.UnauthorizedException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +24,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
+    private final CardDTOConverter cardDTOConverter;
 
     public ResponseString signUp(SignUpRequest request) {
         String encodedPassword = passwordEncoder.encode(request.getPassword());
@@ -59,7 +58,7 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return UserDTO.fromEntity(user);
+        return fromEntity(user);
     }
 
     public List<UserDTO> getAllInfo(String token) {
@@ -69,6 +68,19 @@ public class UserService {
 
         List<User> users = userRepository.findAll();
 
-        return users.stream().map(UserDTO::fromEntity).collect(Collectors.toList());
+        return users.stream().map(user1 -> fromEntity(user1)).collect(Collectors.toList());
     }
-}
+
+    public UserDTO fromEntity(User user) {
+        return UserDTO.builder()
+                .userId(user.getUserId())
+                .name(user.getName())
+                .level(user.getLevel())
+                .expPoint(user.getExpPoint())
+                .decks(user.getDecks().stream()
+                        .map(DeckDTO::fromEntity)
+                        .collect(Collectors.toList()))
+                .statistics(StatisticsDTO.fromEntity(user.getStatistics()))
+                .cards(user.getCards().stream().map(card -> cardDTOConverter.convertToCardDTO(card)).collect(Collectors.toList()))
+                .build();
+    }}
