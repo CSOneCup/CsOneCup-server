@@ -56,12 +56,24 @@ public class CsvDataLoader {
         // CSVData에서 CardDTO로 매핑
         String quizType = csvData.getType();
         int choiceCount = quizType.equals("4지선다") ? 4 : 2; // 퀴즈 타입에 따라 선택지 개수 결정
-        List<String> choices = List.of(
+        System.out.println(choiceCount);
+
+        List<String> choices;
+
+        if(choiceCount==4) {
+            choices = List.of(
                 csvData.getOption1(),
                 csvData.getOption2(),
                 csvData.getOption3(),
                 csvData.getOption4()
-        ).subList(0, choiceCount);
+            );
+        }
+        else {
+            choices = List.of(
+                csvData.getOption1(),
+                csvData.getOption2()
+            );
+        }
 
         return CardDTO.builder()
                 .quizType(quizType)

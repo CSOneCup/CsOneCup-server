@@ -8,10 +8,7 @@ import com.csOneCup.csOneCup.deck.Deck;
 import com.csOneCup.csOneCup.deck.DeckRepository;
 import com.csOneCup.csOneCup.deck_card_mapping.DeckCardMapping;
 import com.csOneCup.csOneCup.deck_card_mapping.DeckCardMappingRepository;
-import com.csOneCup.csOneCup.dto.CardsInDeck;
-import com.csOneCup.csOneCup.dto.DeckCreationRequest;
-import com.csOneCup.csOneCup.dto.DeckDTO;
-import com.csOneCup.csOneCup.dto.DeckResponse;
+import com.csOneCup.csOneCup.dto.*;
 import com.csOneCup.csOneCup.global.error.exception.UnauthorizedException;
 import com.csOneCup.csOneCup.user.User;
 import com.csOneCup.csOneCup.user.UserRepository;
@@ -19,6 +16,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,8 +33,6 @@ public class DeckService {
     public CardsInDeck SearchCardsInDeck(Long deckId, String token) {
         Deck deck = deckRepository.findById(deckId)
                 .orElseThrow(() -> new RuntimeException("Deck not found"));
-
-        if(!deck.getOwner().getUserId().equals(JWTUtil.extractUserId(token))) throw new UnauthorizedException();
 
         List<DeckCardMapping> deckCardMappings = deckCardMappingRepository.findAllByDeck(deck);
 
@@ -59,6 +55,49 @@ public class DeckService {
 
         return DeckResponse.builder()
                 .deckId(deck.getDeckId())
+                .build();
+    }
+    public NewDeckDTOList getThreeDeck(String token) {
+        List<Deck> allDecks = deckRepository.findAll();
+
+        // 3개 이하인 경우
+        if (allDecks.size() <= 3) {
+            List<NewDeckDTO> dtoList = allDecks.stream()
+                    .map(deck -> NewDeckDTO.builder()
+                            .deckId(deck.getDeckId())
+                            .name(deck.getName())
+                            .owner(UserDTO.builder()
+                                    .userId(deck.getOwner().getUserId())
+                                    .name(deck.getOwner().getName())
+                                    .level(deck.getOwner().getLevel())
+                                    .expPoint(deck.getOwner().getExpPoint())
+                                    .build())
+                            .build())
+                    .collect(Collectors.toList());
+
+            return NewDeckDTOList.builder()
+                    .decks(dtoList)
+                    .build();
+        }
+
+        // 3개 초과인 경우
+        Collections.shuffle(allDecks);
+        List<NewDeckDTO> dtoList = allDecks.stream()
+                .limit(3) // 3개만 선택
+                .map(deck -> NewDeckDTO.builder()
+                        .deckId(deck.getDeckId())
+                        .name(deck.getName())
+                        .owner(UserDTO.builder()
+                                .userId(deck.getOwner().getUserId())
+                                .name(deck.getOwner().getName())
+                                .level(deck.getOwner().getLevel())
+                                .expPoint(deck.getOwner().getExpPoint())
+                                .build())
+                        .build())
+                .collect(Collectors.toList());
+
+        return NewDeckDTOList.builder()
+                .decks(dtoList)
                 .build();
     }
 }

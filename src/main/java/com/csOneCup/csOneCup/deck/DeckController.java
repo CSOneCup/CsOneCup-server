@@ -2,9 +2,7 @@ package com.csOneCup.csOneCup.deck;
 
 import com.csOneCup.csOneCup.card.Card;
 import com.csOneCup.csOneCup.deck.DeckService;
-import com.csOneCup.csOneCup.dto.CardsInDeck;
-import com.csOneCup.csOneCup.dto.DeckCreationRequest;
-import com.csOneCup.csOneCup.dto.DeckResponse;
+import com.csOneCup.csOneCup.dto.*;
 import com.csOneCup.csOneCup.global.common.SuccessCode;
 import com.csOneCup.csOneCup.global.common.SuccessResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,5 +33,11 @@ public class DeckController {
         DeckResponse deckResponse = deckService.createDeck(authorizationHeader, request);
 
         return SuccessResponse.ok(deckResponse);
+    }
+
+    @GetMapping("/random3")
+    public ResponseEntity<SuccessResponse<?>> getThreeDeck(@RequestHeader("Authorization") String token) {
+        NewDeckDTOList deck = deckService.getThreeDeck(token);
+        return SuccessResponse.ok(deck);
     }
 }

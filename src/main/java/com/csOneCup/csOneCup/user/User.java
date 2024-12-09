@@ -44,4 +44,10 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "statistics_id")
     private Statistics statistics;
+
+    public void earnEXP() {
+        this.expPoint+=60;
+        this.level+=this.expPoint/100;
+        this.expPoint%=100;
+    }
 }

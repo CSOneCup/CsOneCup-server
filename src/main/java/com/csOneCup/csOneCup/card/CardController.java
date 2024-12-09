@@ -41,6 +41,13 @@ public class CardController {
         return SuccessResponse.ok(card);
     }
 
+    @PostMapping("/deck/new")
+    public ResponseEntity<SuccessResponse<?>> createDeckAndAddCard(@RequestHeader("Authorization") String token, @RequestBody DeckCreationRequestAndCard cardAddingRequest) {
+        System.out.println("called");
+        Boolean ret = cardService.createDeckAndAddCard(token, cardAddingRequest);
+        return SuccessResponse.ok(ret);
+    }
+
     @GetMapping("/card")
     public ResponseEntity<SuccessResponse<?>> searchACard(@RequestHeader("Authorization") String token, @RequestParam boolean redundant, @RequestParam String category) {
         CardDTO cardDTO = cardService.getRandomCard(redundant, category, token);

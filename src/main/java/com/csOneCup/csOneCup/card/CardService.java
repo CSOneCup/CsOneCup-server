@@ -10,6 +10,7 @@ import com.csOneCup.csOneCup.user.User;
 import com.csOneCup.csOneCup.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.aop.scope.ScopedProxyUtils;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -52,6 +53,8 @@ public class CardService {
                         .csvNumber(cardAddingRequest.getCsvNum())
                         .build()
         );
+
+        user.earnEXP();
         return cardDTOConverter.convertToCardDTO(card);
     }
 
@@ -79,6 +82,31 @@ public class CardService {
         deckRepository.save(deck.get());
 
         return cardDTOConverter.convertToCardDTO(realCard);
+    }
+
+    public boolean createDeckAndAddCard(String token, DeckCreationRequestAndCard request) {
+        String userId = JWTUtil.extractUserId(token);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Deck deck = Deck.builder()
+                .name(request.getName())
+                .owner(user)
+                .build();
+        deckRepository.save(deck);
+        List<Card> card = cardRepository.findByCardIdIn(request.getCardId());
+
+        System.out.println(card.size());
+
+        for (Card value : card) {
+            deckCardMappingRepository.save(
+                    DeckCardMapping.builder()
+                            .deck(deck)
+                            .card(value)
+                            .build()
+            );
+        }
+        return true;
     }
 
     public CardDTO getRandomCard(boolean redundant, String category, String token) {
