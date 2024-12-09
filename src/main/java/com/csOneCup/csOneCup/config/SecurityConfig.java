@@ -46,7 +46,11 @@ public class SecurityConfig {
                 .httpBasic((auth) -> auth.disable())
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(
-                                "/api/user/signup"
+                                "/api/user/signup",
+                                "/api/user/signin",
+                                "/swagger-ui/index.html",
+                                "/swagger-ui/**",
+                                "/api/user/healthy"
                         )
                         .permitAll()
                         .anyRequest().authenticated()
