@@ -48,6 +48,84 @@ CSOneCup empowers users by providing them with the ability to:
 The platform turns learning into a rewarding and motivating experience through friendly competition and personalization.  
 <br />
 
+## 기술 스택
+
+### Backend
+- **Framework**: Spring Boot 3.3.5
+- **Language**: Java 17
+- **Database**: MySQL (AWS RDS 연동)
+- **Security**: Spring Security + JWT 인증
+- **API Documentation**: Swagger (SpringDoc OpenAPI)
+- **Build Tool**: Gradle
+- **Dependencies**:
+  - Spring Data JPA
+  - Lombok
+  - JWT (jjwt) 0.12.3
+
+### Frontend
+- **Framework**: Flutter
+- **Language**: Dart
+- **Platform**: Cross-platform (iOS/Android)
+
+### 개발 기간
+**2024년 11월 ~ 2024년 12월**
+
+<br />
+
+## 프로젝트 구조
+
+```
+csOneCup_server/
+├── src/main/java/com/csOneCup/csOneCup/
+│   ├── auth/              # JWT 인증 관련
+│   │   ├── JWTFilter.java
+│   │   └── JWTUtil.java
+│   ├── card/              # 카드 관련 도메인
+│   │   ├── Card.java
+│   │   ├── CardController.java
+│   │   ├── CardService.java
+│   │   └── CardRepository.java
+│   ├── deck/              # 덱 관련 도메인
+│   │   ├── Deck.java
+│   │   ├── DeckController.java
+│   │   ├── DeckService.java
+│   │   └── DeckRepository.java
+│   ├── user/              # 사용자 관련 도메인
+│   │   ├── User.java
+│   │   ├── userController.java
+│   │   ├── UserService.java
+│   │   └── UserRepository.java
+│   ├── statistics/        # 통계 관련
+│   ├── dto/               # Data Transfer Objects
+│   ├── config/            # Spring Security 설정
+│   └── global/            # 전역 에러 처리 및 응답
+│       ├── common/
+│       └── error/
+└── resources/
+    ├── application.properties
+    └── dataset.csv        # CS 퀴즈 데이터
+```
+
+## API 엔드포인트
+
+### 사용자 API (`/api/user`)
+- `POST /signup` - 회원가입
+- `POST /signin` - 로그인 (JWT 토큰 발급)
+- `GET /info` - 사용자 정보 조회
+- `GET /all/info` - 전체 사용자 정보 조회
+
+### 카드 API (`/api/cards`)
+- `GET /user` - 사용자 보유 카드 조회 (카테고리/검색 필터링 가능)
+- `POST /user/add` - 사용자에게 카드 추가
+- `POST /deck/add` - 덱에 카드 추가
+- `POST /deck/new` - 새 덱 생성 및 카드 추가
+- `GET /card` - 랜덤 카드 조회 (카테고리별, 중복 여부 선택)
+
+### 덱 API (`/api/decks`)
+- `GET /{deckId}/cards` - 특정 덱의 카드 목록 조회
+- `POST /` - 새 덱 생성
+- `GET /random3` - 랜덤 3개 덱 추천
+
 ## Key Features
 
 ### Main Features
